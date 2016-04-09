@@ -1,0 +1,106 @@
+## NUMATO Mimas V2 ucf file
+## http://numato.com/
+## Sample board provided by Numato
+
+CONFIG VCCAUX = "3.3" ;
+
+##Clock signal 100 MHz
+NET "clk100" LOC = V10 | IOSTANDARD = LVCMOS33 | PERIOD = 100MHz ;
+Net "clk100" TNM_NET = sys_clk_pin;
+TIMESPEC TS_sys_clk_pin = PERIOD sys_clk_pin 100 MHz high 50%;
+
+###################################################################################################################################################
+#                                              Push Buttons Switches                                                                              #
+################################################################################################################################################### 
+NET "BTNL" LOC = M18 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW1
+NET "BTNC" LOC = L18 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW2
+NET "BTNR" LOC = M16 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW3
+#NET "Switch[2]" LOC = L17 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW4
+#NET "Switch[1]" LOC = K17 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW5
+#NET "Switch[0]" LOC = K18 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW6
+
+
+###################################################################################################################################################
+#                                                    VGA                                                                                          #
+################################################################################################################################################### 
+NET "vga_HSync"                      LOC = B12     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+NET "vga_VSync"                      LOC = A12     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+
+NET "vga_R<2>"                     LOC = C9      | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+NET "vga_R<1>"                     LOC = B9      | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+NET "vga_R<0>"                     LOC = A9      | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+
+NET "vga_G<2>"                   LOC = C11     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+NET "vga_G<1>"                   LOC = A10     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+NET "vga_G<0>"                   LOC = C10     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+
+NET "vga_B<2>"                    LOC = A11     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+NET "vga_B<1>"                    LOC = B11     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+	 
+
+
+#NET "clk_50" TNM_NET = clk_50;
+#TIMESPEC TS_clk50 = PERIOD "clk_50" 20 ns HIGH 50%;
+#NET "clk_50"   LOC = "B8"; # Bank = 0, Pin name = IP_L13P_0/GCLK8, Type = GCLK, Sch name = GCLK0
+
+#NET "OV7670_PWDN"		LOC = "L15" | IOSTANDARD=LVTTL | SLEW=SLOW; # JA0
+#NET "OV7670_RESET"	LOC = "K13" | IOSTANDARD=LVTTL | SLEW=SLOW; # JA4
+#NET "OV7670_DATA<0>" LOC = "K12" | IOSTANDARD=LVTTL | SLEW=SLOW; # JA1
+#NET "OV7670_DATA<1>" LOC = "L16" | IOSTANDARD=LVTTL | SLEW=SLOW; # JA5
+#NET "OV7670_DATA<2>" LOC = "L17" | IOSTANDARD=LVTTL | SLEW=SLOW; # JA2
+#NET "OV7670_DATA<3>" LOC = "M14" | IOSTANDARD=LVTTL | SLEW=SLOW; # JA6
+#NET "OV7670_DATA<4>" LOC = "M15" | IOSTANDARD=LVTTL | SLEW=SLOW; # JA3
+#NET "OV7670_DATA<5>" LOC = "M16" | IOSTANDARD=LVTTL | SLEW=SLOW; # JA7
+#NET "OV7670_DATA<6>" LOC = "M13" | IOSTANDARD=LVTTL | SLEW=SLOW; # JB0
+#NET "OV7670_DATA<7>" LOC = "P17" | IOSTANDARD=LVTTL | SLEW=SLOW; # JB4
+#NET "OV7670_XCLK"		LOC = "R18" | IOSTANDARD=LVTTL | SLEW=SLOW; # JB1
+#NET "OV7670_PCLK"		LOC = "R16" | IOSTANDARD=LVTTL | SLEW=SLOW; # JB5
+#NET "OV7670_HREF"		LOC = "R15" | IOSTANDARD=LVTTL | SLEW=SLOW; # JB2
+#NET "OV7670_VSYNC"	LOC = "T18" | IOSTANDARD=LVTTL | SLEW=SLOW; # JB6
+#NET "OV7670_SIOD"		LOC = "T17" | IOSTANDARD=LVTTL | SLEW=SLOW | PULLUP; # JB3
+#NET "OV7670_SIOC"		LOC = "U18" | IOSTANDARD=LVTTL | SLEW=SLOW; # JB7
+
+
+#NET "config_finished"  LOC = "J14" | IOSTANDARD=LVTTL ; # LED0
+NET config_finished  LOC = P15	| IOSTANDARD=LVCMOS33 ;  #D1
+
+NET OV7670_DATA<7>			LOC = R11  | IOSTANDARD=LVCMOS33 | SLEW=SLOW | PULLDOWN;
+NET OV7670_DATA<6>			LOC = T11  | IOSTANDARD=LVCMOS33 | SLEW=SLOW | PULLDOWN;
+NET OV7670_PCLK				LOC = R10  | IOSTANDARD=LVCMOS33    | SLEW=SLOW;
+NET OV7670_XCLK				LOC = T10   | IOSTANDARD=LVCMOS33    | SLEW=SLOW | PULLDOWN;
+NET OV7670_VSYNC				LOC = U13   | IOSTANDARD=LVCMOS33 | SLEW=SLOW;
+NET OV7670_HREF				LOC = V13   | IOSTANDARD=LVCMOS33 | SLEW=SLOW;
+NET OV7670_SIOC				LOC = U11   | IOSTANDARD=LVCMOS33    | SLEW=SLOW;
+NET OV7670_SIOD				LOC = V11   | IOSTANDARD=LVCMOS33    | SLEW=SLOW | PULLUP;
+
+###################################################################################################################################################
+#                                                   HEADER P9                                                                                     #
+###################################################################################################################################################
+
+NET OV7670_RESET					LOC = H17  | IOSTANDARD=LVCMOS33 | SLEW=SLOW;
+NET OV7670_PWDN				   LOC = H18  | IOSTANDARD=LVCMOS33 | SLEW=SLOW;
+NET OV7670_DATA<1>				LOC = J16  | IOSTANDARD=LVCMOS33 | SLEW=SLOW | PULLDOWN;
+NET OV7670_DATA<0>				LOC = J18  | IOSTANDARD=LVCMOS33 | SLEW=SLOW | PULLDOWN;
+NET OV7670_DATA<3>				LOC = K15  | IOSTANDARD=LVCMOS33 | SLEW=SLOW | PULLDOWN;
+NET OV7670_DATA<2>				LOC = K16  | IOSTANDARD=LVCMOS33 | SLEW=SLOW | PULLDOWN;
+NET OV7670_DATA<5>				LOC = L15  | IOSTANDARD=LVCMOS33 | SLEW=SLOW | PULLDOWN;
+NET OV7670_DATA<4>				LOC = L16  | IOSTANDARD=LVCMOS33 | SLEW=SLOW | PULLDOWN; 
+#NET OV7670_PCLK CLOCK_DEDICATED_ROUTE = FALSE;
+#NET clk100 CLOCK _DEDICATED_ROUTE = FALSE;
+###################################################################################################################################################
+#                                                   HEADER P8                                                                                     #
+###################################################################################################################################################
+
+
+#NET "vga_R<0>"   LOC = "R9";
+#NET "vga_R<1>"   LOC = "T8";
+#NET "vga_R<2>"   LOC = "R8";
+#NET "vga_G<0>" LOC = "N8";
+#NET "vga_G<1>" LOC = "P8";
+#NET "vga_G<2>" LOC = "P6";
+#NET "vga_B<1>"  LOC = "U5";
+#NET "vga_B<2>"  LOC = "U4";
+#NET "vga_HSync"    LOC = "T4";
+#NET "vga_Vsync"    LOC = "U3";
+
+#NET "btn" LOC = "B18";
