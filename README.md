@@ -1,2 +1,2 @@
-# code from 
-# http://hamsterworks.co.nz/mediawiki/index.php/Zedboard_OV7670
+#
+code is from http://hamsterworks.co.nz/mediawiki/index.php/Zedboard_OV7670
