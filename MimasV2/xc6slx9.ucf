@@ -12,13 +12,22 @@ TIMESPEC TS_sys_clk_pin = PERIOD sys_clk_pin 100 MHz high 50%;
 ###################################################################################################################################################
 #                                              Push Buttons Switches                                                                              #
 ################################################################################################################################################### 
-NET "BTNL" LOC = M18 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW1
-NET "BTNC" LOC = L18 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW2
-NET "BTNR" LOC = M16 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW3
-#NET "Switch[2]" LOC = L17 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW4
+#NET "BTNL" LOC = M18 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW1
+#NET "BTNC" LOC = L18 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW2
+#NET "BTNR" LOC = M16 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW3
+#NET "BTND" LOC = L17 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW4
 #NET "Switch[1]" LOC = K17 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW5
 #NET "Switch[0]" LOC = K18 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW6
 
+
+#NET "sw[0]" LOC = C17 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 8
+#NET "sw[1]" LOC = C18 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 7
+#NET "sw[2]" LOC = D17 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 6
+#NET "sw[3]" LOC = D18 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 5
+NET "SW4" LOC = E18 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 4
+NET "SW3" LOC = E16 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 3
+NET "SW2" LOC = F18 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 2
+NET "SW1" LOC = F17 | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 1
 
 ###################################################################################################################################################
 #                                                    VGA                                                                                          #
@@ -34,8 +43,8 @@ NET "vga_G<2>"                   LOC = C11     | IOSTANDARD = LVCMOS33 | DRIVE =
 NET "vga_G<1>"                   LOC = A10     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
 NET "vga_G<0>"                   LOC = C10     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
 
-NET "vga_B<2>"                    LOC = A11     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
-NET "vga_B<1>"                    LOC = B11     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+NET "vga_B<1>"                    LOC = A11     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+NET "vga_B<0>"                    LOC = B11     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
 	 
 
 

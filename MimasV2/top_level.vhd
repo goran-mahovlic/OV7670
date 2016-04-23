@@ -10,16 +10,17 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity top_level is
     Port ( clk100          : in  STD_LOGIC;
-           btnl            : in  STD_LOGIC;
-           btnc            : in  STD_LOGIC;
-           btnr            : in  STD_LOGIC;
+           SW1            : in  STD_LOGIC;
+           SW2            : in  STD_LOGIC;
+           SW3            : in  STD_LOGIC;
+			  SW4            : in  STD_LOGIC;
            config_finished : out STD_LOGIC;
            
            vga_hsync : out  STD_LOGIC;
            vga_vsync : out  STD_LOGIC;
-           vga_r     : out  STD_LOGIC_vector(3 downto 0);
-           vga_g     : out  STD_LOGIC_vector(3 downto 0);
-           vga_b     : out  STD_LOGIC_vector(3 downto 0);
+           vga_r     : out  STD_LOGIC_vector(2 downto 0);
+           vga_g     : out  STD_LOGIC_vector(2 downto 0);
+           vga_b     : out  STD_LOGIC_vector(1 downto 0);
            
            ov7670_pclk  : in  STD_LOGIC;
            ov7670_xclk  : out STD_LOGIC;
@@ -59,6 +60,25 @@ architecture Behavioral of top_level is
 		reset : OUT std_logic;
 		pwdn : OUT std_logic;
 		xclk : OUT std_logic
+		);
+	END COMPONENT;
+
+	COMPONENT edge_enhance
+	PORT(
+				Edge_clk            : in STD_LOGIC;
+            enable_feature : in std_logic;
+            in_blank  : in std_logic;
+            in_hsync  : in std_logic;
+            in_vsync  : in std_logic;
+            in_red    : in std_logic_vector(7 downto 0);
+            in_green  : in std_logic_vector(7 downto 0);
+            in_blue   : in std_logic_vector(7 downto 0);
+            out_blank : out std_logic;
+            out_hsync : out std_logic;
+            out_vsync : out std_logic;
+            out_red   : out std_logic_vector(7 downto 0);
+            out_green : out std_logic_vector(7 downto 0);
+            out_blue  : out std_logic_vector(7 downto 0)
 		);
 	END COMPONENT;
 
@@ -152,14 +172,33 @@ architecture Behavioral of top_level is
    
    signal rez_160x120 : std_logic;
    signal rez_320x240 : std_logic;
+	signal Enc_enable_feature : std_logic;
+   signal Enc_in_blank  : std_logic;
+   signal Enc_in_hsync  : std_logic;
+   signal Enc_in_vsync  : std_logic;
+   signal Enc_out_blank  : std_logic;
+   signal Enc_out_hsync  : std_logic;
+   signal Enc_out_vsync  : std_logic;
+   signal Enc_out_red    : std_logic_vector(7 downto 0);
+   signal Enc_out_green  : std_logic_vector(7 downto 0);
+   signal Enc_out_blue   : std_logic_vector(7 downto 0);
+   signal Enc_in_red    : std_logic_vector(7 downto 0);
+   signal Enc_in_green  : std_logic_vector(7 downto 0);
+   signal Enc_in_blue   : std_logic_vector(7 downto 0);
+	signal invertActiveArea : std_logic;
 begin
-   vga_r <= red(7 downto 4);
-   vga_g <= green(7 downto 4);
-   vga_b <= blue(7 downto 4);
-   
-   rez_160x120 <= btnl;
-   rez_320x240 <= btnr;
-  
+   Enc_in_red <= red(7 downto 0);
+   Enc_in_green <= green(7 downto 0);
+   Enc_in_blue <= blue(7 downto 0);
+	vga_r  <= Enc_out_red(7 downto 5);
+	vga_g <= Enc_out_green(7 downto 5);
+	vga_b <= Enc_out_blue(7 downto 6);
+	vga_hsync <= Enc_out_hsync;
+	vga_vsync <= Enc_out_vsync;
+   Enc_in_blank <= not ActiveArea;
+   rez_160x120 <= SW1;
+   rez_320x240 <= SW3;
+   Enc_enable_feature <= SW4;
 -- For the Nexys2  
 --	Inst_vga_pll: vga_pll PORT MAP(
 --		inclk0 => clk50,
@@ -173,15 +212,16 @@ inst_vga_pll : inst_vga_pll_numato
      CLK50_camera => CLK_camera,
      CLK25_vga => CLK_vga);
 
-   vga_vsync <= vsync;
-   
+vsync <=  Vsync; 
+vsync <=  Enc_in_vsync;
+
 	Inst_VGA: VGA PORT MAP(
 		CLK25      => clk_vga,
       rez_160x120 => rez_160x120,
       rez_320x240 => rez_320x240,
 		clkout     => open,
-		Hsync      => vga_hsync,
-		Vsync      => vsync,
+		Hsync      => Enc_in_hsync,
+		Vsync      => Enc_in_vsync,
 		Nblank     => nBlank,
 		Nsync      => nsync,
       activeArea => activeArea
@@ -189,7 +229,7 @@ inst_vga_pll : inst_vga_pll_numato
 
 	Inst_debounce: debounce PORT MAP(
 		clk => clk_vga,
-		i   => btnc,
+		i   => SW2,
 		o   => resend
 	);
 
@@ -242,6 +282,21 @@ inst_vga_pll : inst_vga_pll_numato
 		enable => activeArea,
       vsync  => vsync,
 		address => rdaddress
+	);
+	Inst_edge_enhance: edge_enhance PORT MAP(
+		Edge_clk  =>  clk_vga,	
+      in_blank  => Enc_in_blank,
+      enable_feature => Enc_enable_feature,    
+      in_hsync => Enc_in_hsync,
+      in_vsync => Enc_in_vsync,
+      in_red => Enc_in_red,
+      in_green => Enc_in_green,
+      in_blue => Enc_in_blue,
+		out_red => Enc_out_red,
+		out_green => Enc_out_green,
+		out_blue => Enc_out_blue,
+      out_hsync => Enc_out_hsync,
+      out_vsync => Enc_out_vsync
 	);
 
 end Behavioral;
