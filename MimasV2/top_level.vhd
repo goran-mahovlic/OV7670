@@ -15,13 +15,11 @@ entity top_level is
            SW3            : in  STD_LOGIC;
 			  SW4            : in  STD_LOGIC;
            config_finished : out STD_LOGIC;
-           
            vga_hsync : out  STD_LOGIC;
            vga_vsync : out  STD_LOGIC;
            vga_r     : out  STD_LOGIC_vector(2 downto 0);
            vga_g     : out  STD_LOGIC_vector(2 downto 0);
            vga_b     : out  STD_LOGIC_vector(1 downto 0);
-           
            ov7670_pclk  : in  STD_LOGIC;
            ov7670_xclk  : out STD_LOGIC;
            ov7670_vsync : in  STD_LOGIC;
@@ -30,11 +28,40 @@ entity top_level is
            ov7670_sioc  : out STD_LOGIC;
            ov7670_siod  : inout STD_LOGIC;
            ov7670_pwdn  : out STD_LOGIC;
-           ov7670_reset : out STD_LOGIC
+           ov7670_reset : out STD_LOGIC;
+			  channel1_p : out STD_LOGIC;
+			  channel1_n : out STD_LOGIC;
+			  channel2_p : out STD_LOGIC;
+		     channel2_n : out STD_LOGIC;
+ 		     channel3_p : out STD_LOGIC;
+		     channel3_n : out STD_LOGIC;
+		     clock_p : out STD_LOGIC;
+		     clock_n : out STD_LOGIC
            );
 end top_level;
 
 architecture Behavioral of top_level is
+
+	COMPONENT video_lvds
+	PORT(
+		DotClock : IN std_logic;
+		HSync : IN std_logic;
+		VSync : IN std_logic;
+		DataEnable : IN std_logic;
+		Red : in std_logic_vector(5 downto 0);
+		Green : in std_logic_vector(5 downto 0);
+		Blue : in std_logic_vector(5 downto 0);
+		channel1_p : OUT std_logic;
+		channel1_n : OUT std_logic;
+		channel2_p : OUT std_logic;
+		channel2_n : OUT std_logic;
+		channel3_p : OUT std_logic;
+		channel3_n : OUT std_logic;
+		clock_p : OUT std_logic;
+		clock_n : OUT std_logic
+		);
+	END COMPONENT;
+
 
 	COMPONENT VGA
 	PORT(
@@ -130,7 +157,9 @@ architecture Behavioral of top_level is
 	port (
 		CLK100       : in  std_logic;
 		CLK50_camera : out std_logic;
-		CLK25_vga    : out std_logic);
+		CLK25_vga    : out std_logic;
+		CLK60_LVDS   : out std_logic
+		);
 	end component;
 	
 	COMPONENT vga_pll
@@ -156,6 +185,7 @@ architecture Behavioral of top_level is
 
    signal clk_camera : std_logic;
    signal clk_vga    : std_logic;
+	signal clk_lvds   : std_logic;
    signal wren       : std_logic;
    signal resend     : std_logic;
    signal nBlank     : std_logic;
@@ -186,6 +216,13 @@ architecture Behavioral of top_level is
    signal Enc_in_green  : std_logic_vector(7 downto 0);
    signal Enc_in_blue   : std_logic_vector(7 downto 0);
 	signal invertActiveArea : std_logic;
+	signal lvds_DataEnable :  std_logic;
+	signal red_lvds_in : std_logic_vector(5 downto 0);
+	signal green_lvds_in : std_logic_vector(5 downto 0);
+	signal blue_lvds_in : std_logic_vector(5 downto 0);
+	signal hsync_lvds_in : std_logic;
+	signal vsync_lvds_in : std_logic;	
+	
 begin
    Enc_in_red <= red(7 downto 0);
    Enc_in_green <= green(7 downto 0);
@@ -195,7 +232,13 @@ begin
 	vga_b <= Enc_out_blue(7 downto 6);
 	vga_hsync <= Enc_out_hsync;
 	vga_vsync <= Enc_out_vsync;
+	red_lvds_in <= Enc_out_red(7 downto 2);
+	green_lvds_in <= Enc_out_green(7 downto 2);
+	blue_lvds_in <= Enc_out_blue(7 downto 2);
+	hsync_lvds_in <= Enc_out_hsync;
+	vsync_lvds_in <= Enc_out_hsync;
    Enc_in_blank <= not ActiveArea;
+	lvds_DataEnable <= ActiveArea;
    rez_160x120 <= SW1;
    rez_320x240 <= SW3;
    Enc_enable_feature <= SW4;
@@ -210,7 +253,9 @@ inst_vga_pll : inst_vga_pll_numato
   port map
    ( CLK100 => CLK100,
      CLK50_camera => CLK_camera,
-     CLK25_vga => CLK_vga);
+     CLK25_vga => CLK_vga,
+	  CLK60_LVDS => clk_lvds
+	  );
 
 vsync <=  Vsync; 
 vsync <=  Enc_in_vsync;
@@ -298,6 +343,23 @@ vsync <=  Enc_in_vsync;
       out_hsync => Enc_out_hsync,
       out_vsync => Enc_out_vsync
 	);
-
+	
+ Inst_video_lvds: video_lvds PORT MAP(
+ 		DotClock => clk_lvds,
+		HSync => hsync_lvds_in,
+		VSync => vsync_lvds_in,
+		DataEnable=> lvds_DataEnable,
+		Red => red_lvds_in,
+		Green => green_lvds_in,
+		Blue => blue_lvds_in,
+		channel1_p => channel1_p,
+		channel1_n => channel1_n,
+		channel2_p => channel2_p,
+		channel2_n => channel2_n,
+		channel3_p => channel3_p,
+		channel3_n => channel3_n,
+		clock_p => clock_p,
+		clock_n => clock_n	
+	);
+	
 end Behavioral;
-
